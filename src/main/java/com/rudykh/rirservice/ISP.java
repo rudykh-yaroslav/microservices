@@ -1,5 +1,7 @@
 package com.rudykh.rirservice;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 /**
@@ -10,6 +12,7 @@ public class ISP {
 
     @Id
     @GeneratedValue
+    @JsonIgnore
     private Long id;
 
     @Column(nullable = false)

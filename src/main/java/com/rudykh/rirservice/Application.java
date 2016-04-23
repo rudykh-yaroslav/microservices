@@ -28,6 +28,7 @@ public class Application {
                 ispRepository.save(new ISP("Some ISP", "https://www.ripe.net/", "mail1@some.isp"));
                 ispRepository.save(new ISP("Some ISP", "https://www.ripe.net/", "mail2@some.isp"));
                 ispRepository.save(new ISP("Some ISP", "", "mail3@some.isp"));
+                ispRepository.save(new ISP("1Some ISP", "https://www.ripe.net/", "mail4@some.isp"));
             }
         };
 //        return (evt) -> {
