@@ -25,7 +25,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.hasSize;
 
 
 /**
@@ -38,6 +39,10 @@ public class ISPContollerTest {
 
     private MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
             MediaType.APPLICATION_JSON.getSubtype(),
+            Charset.forName("utf8"));
+
+    private MediaType xmlContentType = new MediaType(MediaType.APPLICATION_XML.getType(),
+            MediaType.APPLICATION_XML.getSubtype(),
             Charset.forName("utf8"));
 
     private MockMvc mockMvc;
@@ -106,6 +111,7 @@ public class ISPContollerTest {
                 .accept(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$.[0].id", is(ispList.get(0).getId().intValue())))
                 .andExpect(jsonPath("$.[0].companyName", is(ispList.get(0).getCompanyName())))
                 .andExpect(jsonPath("$.[0].website", is(ispList.get(0).getWebsite())))
@@ -118,7 +124,7 @@ public class ISPContollerTest {
                 .accept(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-//                .andExpect(jsonPath("$.length()", is(3)))
+                .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$.[0].id", is(ispList.get(1).getId().intValue())))
                 .andExpect(jsonPath("$.[0].companyName", is(ispList.get(1).getCompanyName())))
                 .andExpect(jsonPath("$.[0].website", is(ispList.get(1).getWebsite())))
@@ -134,6 +140,51 @@ public class ISPContollerTest {
     }
 
     @Test
+    public void ispNotSearchedByCompanyName() throws Exception {
+        mockMvc.perform(get("/isp/search").param("companyName", "Not Existing Name")
+                .accept(contentType))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void singleISPSearchedByCompanyName() throws Exception {
+        mockMvc.perform(get("/isp/search").param("companyName", ispList.get(0).getCompanyName().substring(5, 15))
+                .accept(contentType))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$.[0].id", is(ispList.get(0).getId().intValue())))
+                .andExpect(jsonPath("$.[0].companyName", is(ispList.get(0).getCompanyName())))
+                .andExpect(jsonPath("$.[0].website", is(ispList.get(0).getWebsite())))
+                .andExpect(jsonPath("$.[0].email", is(ispList.get(0).getEmail())));
+    }
+
+    @Test
+    public void multipleISPsSearchedByCompanyName() throws Exception {
+        mockMvc.perform(get("/isp/search").param("companyName", ispList.get(1).getCompanyName().substring(0, 4))
+                .accept(contentType))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$.[0].id", is(ispList.get(4).getId().intValue())))
+                .andExpect(jsonPath("$.[0].companyName", is(ispList.get(4).getCompanyName())))
+                .andExpect(jsonPath("$.[0].website", is(ispList.get(4).getWebsite())))
+                .andExpect(jsonPath("$.[0].email", is(ispList.get(4).getEmail())))
+                .andExpect(jsonPath("$.[1].id", is(ispList.get(1).getId().intValue())))
+                .andExpect(jsonPath("$.[1].companyName", is(ispList.get(1).getCompanyName())))
+                .andExpect(jsonPath("$.[1].website", is(ispList.get(1).getWebsite())))
+                .andExpect(jsonPath("$.[1].email", is(ispList.get(1).getEmail())))
+                .andExpect(jsonPath("$.[2].id", is(ispList.get(2).getId().intValue())))
+                .andExpect(jsonPath("$.[2].companyName", is(ispList.get(2).getCompanyName())))
+                .andExpect(jsonPath("$.[2].website", is(ispList.get(2).getWebsite())))
+                .andExpect(jsonPath("$.[2].email", is(ispList.get(2).getEmail())))
+                .andExpect(jsonPath("$.[3].id", is(ispList.get(3).getId().intValue())))
+                .andExpect(jsonPath("$.[3].companyName", is(ispList.get(3).getCompanyName())))
+                .andExpect(jsonPath("$.[3].website", is(ispList.get(3).getWebsite())))
+                .andExpect(jsonPath("$.[3].email", is(ispList.get(3).getEmail())));
+    }
+
+    @Test
     public void ispNotFoundByWebsite() throws Exception {
         mockMvc.perform(get("/isp").param("website", "not.existing.site")
                 .accept(contentType))
@@ -146,6 +197,7 @@ public class ISPContollerTest {
                 .accept(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$.[0].id", is(ispList.get(0).getId().intValue())))
                 .andExpect(jsonPath("$.[0].companyName", is(ispList.get(0).getCompanyName())))
                 .andExpect(jsonPath("$.[0].website", is(ispList.get(0).getWebsite())))
@@ -158,7 +210,7 @@ public class ISPContollerTest {
                 .accept(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
-//                .andExpect(jsonPath("$.length()", is(3)))
+                .andExpect(jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$.[0].id", is(ispList.get(4).getId().intValue())))
                 .andExpect(jsonPath("$.[0].companyName", is(ispList.get(4).getCompanyName())))
                 .andExpect(jsonPath("$.[0].website", is(ispList.get(4).getWebsite())))
@@ -174,11 +226,57 @@ public class ISPContollerTest {
     }
 
     @Test
+    public void ispNotSearchedByWebsite() throws Exception {
+        mockMvc.perform(get("/isp/search").param("website", "not.existing.site")
+                .accept(contentType))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void singleISPSearchedByWebsite() throws Exception {
+        mockMvc.perform(get("/isp/search").param("website", ispList.get(0).getWebsite().substring(0, 22))
+                .accept(contentType))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$.[0].id", is(ispList.get(0).getId().intValue())))
+                .andExpect(jsonPath("$.[0].companyName", is(ispList.get(0).getCompanyName())))
+                .andExpect(jsonPath("$.[0].website", is(ispList.get(0).getWebsite())))
+                .andExpect(jsonPath("$.[0].email", is(ispList.get(0).getEmail())));
+    }
+
+    @Test
+    public void multipleISPsSearchedByWebsite() throws Exception {
+        mockMvc.perform(get("/isp/search").param("website", ispList.get(0).getWebsite().substring(0, 21))
+                .accept(contentType))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$.[0].id", is(ispList.get(4).getId().intValue())))
+                .andExpect(jsonPath("$.[0].companyName", is(ispList.get(4).getCompanyName())))
+                .andExpect(jsonPath("$.[0].website", is(ispList.get(4).getWebsite())))
+                .andExpect(jsonPath("$.[0].email", is(ispList.get(4).getEmail())))
+                .andExpect(jsonPath("$.[1].id", is(ispList.get(0).getId().intValue())))
+                .andExpect(jsonPath("$.[1].companyName", is(ispList.get(0).getCompanyName())))
+                .andExpect(jsonPath("$.[1].website", is(ispList.get(0).getWebsite())))
+                .andExpect(jsonPath("$.[1].email", is(ispList.get(0).getEmail())))
+                .andExpect(jsonPath("$.[2].id", is(ispList.get(1).getId().intValue())))
+                .andExpect(jsonPath("$.[2].companyName", is(ispList.get(1).getCompanyName())))
+                .andExpect(jsonPath("$.[2].website", is(ispList.get(1).getWebsite())))
+                .andExpect(jsonPath("$.[2].email", is(ispList.get(1).getEmail())))
+                .andExpect(jsonPath("$.[3].id", is(ispList.get(2).getId().intValue())))
+                .andExpect(jsonPath("$.[3].companyName", is(ispList.get(2).getCompanyName())))
+                .andExpect(jsonPath("$.[3].website", is(ispList.get(2).getWebsite())))
+                .andExpect(jsonPath("$.[3].email", is(ispList.get(2).getEmail())));
+    }
+
+    @Test
     public void singleISPFoundByEmptyWebsite() throws Exception {
         mockMvc.perform(get("/isp").param("website", "")
                 .accept(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$.[0].id", is(ispList.get(3).getId().intValue())))
                 .andExpect(jsonPath("$.[0].companyName", is(ispList.get(3).getCompanyName())))
                 .andExpect(jsonPath("$.[0].website", is(ispList.get(3).getWebsite())))
@@ -205,11 +303,53 @@ public class ISPContollerTest {
     }
 
     @Test
+    public void ispNotSearchedByEmail() throws Exception {
+        mockMvc.perform(get("/isp/search").param("email", "not@existing.email")
+                .accept(contentType))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void singleISPSearchedByEmail() throws Exception {
+        mockMvc.perform(get("/isp/search").param("email", ispList.get(0).getEmail().substring(4, 19))
+                .accept(contentType))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$.[0].id", is(ispList.get(0).getId().intValue())))
+                .andExpect(jsonPath("$.[0].companyName", is(ispList.get(0).getCompanyName())))
+                .andExpect(jsonPath("$.[0].website", is(ispList.get(0).getWebsite())))
+                .andExpect(jsonPath("$.[0].email", is(ispList.get(0).getEmail())));
+    }
+
+    @Test
+    public void multipleISPsSearchedByEmail() throws Exception {
+        mockMvc.perform(get("/isp/search").param("email", ispList.get(1).getEmail().substring(0, 4))
+                .accept(contentType))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$.[0].id", is(ispList.get(4).getId().intValue())))
+                .andExpect(jsonPath("$.[0].companyName", is(ispList.get(4).getCompanyName())))
+                .andExpect(jsonPath("$.[0].website", is(ispList.get(4).getWebsite())))
+                .andExpect(jsonPath("$.[0].email", is(ispList.get(4).getEmail())))
+                .andExpect(jsonPath("$.[1].id", is(ispList.get(1).getId().intValue())))
+                .andExpect(jsonPath("$.[1].companyName", is(ispList.get(1).getCompanyName())))
+                .andExpect(jsonPath("$.[1].website", is(ispList.get(1).getWebsite())))
+                .andExpect(jsonPath("$.[1].email", is(ispList.get(1).getEmail())))
+                .andExpect(jsonPath("$.[2].id", is(ispList.get(2).getId().intValue())))
+                .andExpect(jsonPath("$.[2].companyName", is(ispList.get(2).getCompanyName())))
+                .andExpect(jsonPath("$.[2].website", is(ispList.get(2).getWebsite())))
+                .andExpect(jsonPath("$.[2].email", is(ispList.get(2).getEmail())));
+    }
+
+    @Test
     public void ispList() throws Exception {
         mockMvc.perform(get("/isp/list")
                 .accept(contentType))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$", hasSize(5)))
                 .andExpect(jsonPath("$.[0].id", is(ispList.get(4).getId().intValue())))
                 .andExpect(jsonPath("$.[0].companyName", is(ispList.get(4).getCompanyName())))
                 .andExpect(jsonPath("$.[0].website", is(ispList.get(4).getWebsite())))
@@ -233,12 +373,21 @@ public class ISPContollerTest {
     }
 
     @Test
-    public void createISP() throws Exception {
+    public void createISPSuccess() throws Exception {
         String ispJson = toJson(new ISP("New ISP", "http://wibsite.com", "new@isp.email"));
         this.mockMvc.perform(post("/isp/register")
                 .contentType(contentType)
                 .content(ispJson))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void createISPFailure() throws Exception {
+        String ispJson = toJson(new ISP("New ISP", "http://wibsite.com", "noc.ebo-enterprises@com"));
+        this.mockMvc.perform(post("/isp/register")
+                .contentType(contentType)
+                .content(ispJson))
+                .andExpect(status().isUnprocessableEntity());
     }
 
     private String toJson(Object o) throws IOException {
