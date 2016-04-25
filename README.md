@@ -5,6 +5,7 @@ This is a microservice simulating Regional Internet Registry (RIR).
 
 The service is implemented in Java using Spring Boot.
 
+
 Technologies
 ------------
 
@@ -14,6 +15,7 @@ Technologies
 - H2 database.
 - JUnit.
 - Maven
+
 
 How To Run
 ----------
@@ -39,7 +41,7 @@ Usage
 - http://localhost:8889/mappings - list of available HTTP endpoints.
 - http://localhost:8889/metrics - some metrics for the service.
 
-Assumtion: ISPs may have same names and websites but emails are uniqie!
+Assumtion: ISP is described by companyName, website and email and assumption is made that ISPs may have same names and websites but emails are unique!
 
 RIR Service supports both JSON and XML formats: it provides the result for GET requests in different formats depending on "Accept" request header. User "application/json" to get JSON response and "application/xml" to get XML response.
 
