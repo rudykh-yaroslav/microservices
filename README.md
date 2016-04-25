@@ -49,7 +49,7 @@ Errors are described with different HTTP response codes:
 
 - if the requested data was not found the response code is 404 (Not Found).
 - if there was an error during new ISP registration (duplicate email for example) the response code is 422 (Unprocessable Entity).
-- id incorrect URL was invoke the response code is 400 (Bad Request) or  404 (Not Found).
+- if incorrect URL was invoked the response code is 400 (Bad Request) or  404 (Not Found).
 
 
 Configuration
