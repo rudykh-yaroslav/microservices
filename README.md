@@ -43,7 +43,7 @@ Usage
 
 Assumtion: ISP is described by companyName, website and email and assumption is made that ISPs may have same names and websites but emails are unique!
 
-RIR Service supports both JSON and XML formats: it provides the result for GET requests in different formats depending on "Accept" request header. User "application/json" to get JSON response and "application/xml" to get XML response.
+RIR Service supports both JSON and XML formats: it provides the result for GET requests in different formats depending on "Accept" request header. Use "application/json" to get JSON response and "application/xml" to get XML response. /isp/register endpoint can accept XML or JSON data which can be converted into ISP POJO.
 
 Errors are described with different HTTP response codes:
 
