@@ -42,7 +42,7 @@ Usage
 - http://localhost:8889/mappings - list of available HTTP endpoints.
 - http://localhost:8889/metrics - some metrics for the service.
 
-Assumtion: ISP is described by companyName, website and email and assumption is made that ISPs may have same names and websites but emails are unique!
+Assumption: ISP is described by companyName, website and email and assumption is made that ISPs may have same names and websites but emails are unique!
 
 RIR Service supports both JSON and XML formats: it provides the result for GET requests in different formats depending on "Accept" request header. Use "application/json" to get JSON response and "application/xml" to get XML response. /isp/register endpoint can accept XML or JSON data which can be converted into ISP POJO.
 
