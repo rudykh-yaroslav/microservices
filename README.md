@@ -13,6 +13,7 @@ Technologies
 - JPA.
 - Spring Actuator (monitoring and health check).
 - H2 database.
+- HikariCP
 - JUnit.
 - Maven
 
@@ -57,5 +58,5 @@ Configuration
 
 There are two configuration files in src/main/resources directory:
 
-- application.properties - allows to set the main service port,m anagement endpoints port and he address that the management endpoints are available on.
+- application.properties - allows to set the main service port, management endpoints port, the address that the management endpoints are available on and DB connection properties.
 - logback.xml - logging configuration providing both console and file logging by default. File logs are created in logs directory.
