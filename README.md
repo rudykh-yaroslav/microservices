@@ -13,6 +13,7 @@ Technologies
 - JPA.
 - Spring Actuator (monitoring and health check).
 - H2 database.
+- HikariCP
 - JUnit.
 - Maven
 
